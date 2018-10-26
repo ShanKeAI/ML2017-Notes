@@ -1,0 +1,19 @@
+\chapter{Regression}
+\section{笔记}
+解一个回归问题主要是三个步骤
+\begin{itemize}
+    \item Step 1:\\ 
+    定义一个 Linear Model: $y_i = b + \sum_{i=1}^{m}w_i \times x_i$(一共有m笔数据) 或是写成矩阵形式
+    $Y = b + W \cdot X$。
+    \item Step 2: \\
+    定义一个Loss Function，输入是我们之前定义的Linear Model输出是Linear model有多不好。
+    \\
+    $Loss(f) = \sum_{i=1}^{m}(y_i - f(x_i))^2$ --> 
+    $Loss(W, b) = \sum_{i=1}^{m}[y_i - (w_i \times x_i + b)]^2$
+    \item Step 3:\\
+    找到一个W和b使得Loss得到最小值
+    \\
+    $f^* = \mathop{\arg\min}_{W,b}Loss(W,b) $\\$ = \mathop{\arg\min}_{W, b}\sum_{i=1}^{m}[y_i - (w_i \times x_i + b)]^2$
+\end{itemize}
+最关键的就是Step3了，那么该怎么找到W和b使得Loss的值最小呢
+\section{总结}
