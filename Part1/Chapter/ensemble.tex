@@ -80,7 +80,7 @@ Random Forest 就是 Bagging of decision tree, 随机森林在对每棵树随机
 得到$f_2(x)$之后再用$f_3(x)$来帮助$f_2(x)$......重复下去。
 (Boosting训练是有顺序的)
 \\
-假设我们有一个数据集{{${(x^1, \hat{y}^1), (x^2, \hat{y}^2), ..., (x^m, \hat{y}^m)}$}} 
+假设我们有一个数据集{{${(x^1, \hat{y}^1), (x^2, \hat{y}^2), ..., (x^n, \hat{y}^n)}$}} 
 其中$\hat{y}^i = \textpm 1$是一个二分类问题，那么我们该怎么得到不同的分类器呢？\\
 我们可以用不同的数据来训练分类器， 有两种方法来生成不同的数据。
 
@@ -90,7 +90,7 @@ Random Forest 就是 Bagging of decision tree, 随机森林在对每棵树随机
 \end{itemize}
 
 
-随机抽取数据不必多说，给数据权重就是每一笔数据给一个$u^i$作为权重然后我们的数据集就成了{{${(x^1, \hat{y}^1，u^1), (x^2, \hat{y}^2， u^2), ..., (x^m, \hat{y}^m, u^m)}$}}
+随机抽取数据不必多说，给数据权重就是每一笔数据给一个$u^i$作为权重然后我们的数据集就成了{{${(x^1, \hat{y}^1，u^1), (x^2, \hat{y}^2， u^2), ..., (x^n, \hat{y}^n, u^n)}$}}
 然后 我们要改变我们的Loss Function:$L(f) = \sum_{i=0}^{n}u^il(f(x^i), \hat{y}^i)$，这样如果某笔data的权重很大造成loss很大，就会受到更多的关注。
 (初始权重为1)
 \subsection{Idea of Adaboost}
@@ -99,7 +99,7 @@ Adaboost的思想就是先训练$f_1(x)$(准确度必然大于50\%), 然后更�
 \centerline{${\epsilon}_1$ 是$f_1(x)$的错误率}\\\\
 
 \begin{equation*}
-    Z_1 = \sum_{i=1}^m u_1^i
+    Z_1 = \sum_{i=1}^n u_1^i
 \end{equation*}
 
 \begin{equation*}
@@ -138,7 +138,7 @@ Adaboost的思想就是先训练$f_1(x)$(准确度必然大于50\%), 然后更�
 \\
 
 \begin{equation*}
-    \sum_{i=0}^{n} u_2^i \delta(f(x^i) \neq \hat{y}^i) = \sum_{f(x_i) \neq \hat{y}_i {i=1}}^n u_2^i d_1
+    \sum_{i=0}^{n} u_2^i \delta(f(x^i) \neq \hat{y}^i) = \sum_{f(x_i) \neq \hat{y}_i {i=1}}^n u_1^i d_1
 \end{equation*}
 
 \begin{equation*}
@@ -218,3 +218,99 @@ $d_1 = \sqrt{\frac{(1 - \epsilon_1)}{\epsilon_1}} > 1$
         \caption{Toy Example Step 4}
     \end{figure}
 \end{itemize}
+
+\subsection{More Detial in Adaboost}
+
+最终的分类$H(x)$的方程是：
+\begin{equation*}
+    H(x) = sign(\sum_{t=1}^T \alpha_t f_t(x))
+\end{equation*}
+
+\begin{equation*}
+    g(x) = \sum_{t=1}^T \alpha_t f_t(x)
+\end{equation*}
+训练数据上的错误率为（有N笔数据）:
+
+\begin{equation*}
+    Error Rate = \frac{1}{N} \sum_{n=1}^N \delta(H(x^n) \neq \hat{y}^n)
+    = \frac{1}{N} \sum_{n=1}^N \delta(\hat{y}^n g(x^n) < 0)
+\end{equation*}
+
+ErrorRate存在一个上限:
+
+
+\begin{equation*}
+    Error Rate \leq \frac{1}{N} \sum_{n=1}^N  \exp(-\hat{y}^n g(x^n))
+\end{equation*}
+
+
+图中绿线代表$\delta(\hat{y}^n g(x^n) < 0)$
+蓝线代表$\exp(-\hat{y}^n g(x^n))$， 横坐标是$\hat{y}^n g(x^n)$
+
+\begin{figure}[H]
+    \centerline{\includegraphics[scale=0.5]{Part1/Chapter/images/upperband.png}}
+    \caption{上限}
+\end{figure}
+
+我们要证明上限越来越小
+
+\begin{equation*}
+    Z_t = \sum_{i=1}^n u_t^i
+\end{equation*}
+\begin{equation*}
+    Z_{t+1} = \sum_{i=1}^n u_{t+1}^i
+\end{equation*}
+
+\begin{figure}[H]
+    \centerline{\includegraphics[scale=0.3]{Part1/Chapter/images/zt+1.png}}
+\end{figure}
+
+看懂上面的推导之后我们发现$\frac{1}{N} Z_{t+1} = \frac{1}{N} \sum_{n=1}^N  \exp(-\hat{y}^n g(x^n))$
+所以能证明$Z$越来越小就ok了。
+
+\begin{figure}[H]
+    \centerline{\includegraphics[scale=0.5]{Part1/Chapter/images/proofzt.png}}
+    \caption{证明$Z_t$越来越小}
+\end{figure}
+
+Adaboost有很神奇的现象，当在training上的error达到零时，在test上的error还可以下降原因是权重可以增加$Margin$
+其实原理很简单, AdaBoost的error会无限接近于零但不是零。
+\begin{figure}[H]
+    \centerline{\includegraphics[scale=0.5]{Part1/Chapter/images/largemargin.png}}
+    \caption{证明Test上的error rate会变小}
+\end{figure}
+我们用深度是5的决策树进行Adaboost效果要比在单棵树上好太多。
+
+\begin{figure}[H]
+    \centerline{\includegraphics[scale=0.5]{Part1/Chapter/images/adaboostexp.png}}
+    \caption{AdaBoost Experienment}
+\end{figure}
+\subsection{Gradient Boosting}
+使用梯度下降的角度来阐释Boosting, 只不过使我们的梯度和LearningRate可以直接求出来，我们可以修改Boosting的object function来达到不同目的。
+\begin{figure}[H]
+    \centerline{\includegraphics[scale=0.5]{Part1/Chapter/images/gb1.png}}
+\end{figure}
+\begin{figure}[H]
+    \centerline{\includegraphics[scale=0.5]{Part1/Chapter/images/gb2.png}}
+   
+\end{figure}
+\begin{figure}[H]
+    \centerline{\includegraphics[scale=0.5]{Part1/Chapter/images/gb3.png}}
+\end{figure}
+\begin{figure}[H]
+    \centerline{\includegraphics[scale=0.5]{Part1/Chapter/images/gb4.png}}
+\end{figure}
+
+
+\section{Voting}
+\begin{figure}[H]
+    \centerline{\includegraphics[scale=0.5]{Part1/Chapter/images/voting.png}}
+    \caption{AdaBoost Experienment}
+\end{figure}
+
+\section{Stacking}
+做Stacking时你要将training data分成两笔，一笔训练单模型一笔训练final classifier，目的是要避免过拟合的单模型获得大的权重。
+\begin{figure}[H]
+    \centerline{\includegraphics[scale=0.5]{Part1/Chapter/images/stacking.png}}
+    \caption{AdaBoost Experienment}
+\end{figure}
