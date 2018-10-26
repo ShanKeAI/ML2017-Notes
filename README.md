@@ -10,7 +10,7 @@
 
 [![](https://img.shields.io/github/downloads/ShanKeAI/ML2017-Notes/latest/ml-notes.pdf.svg)](https://github.com/ShanKeAI/ML2017-Notes/releases/download/v0.0/ml-notes.pdf)
 
-| 章节 | 完成状况 | 预计完成时间 | 完成人 | 审核人 |
+| 章节 | 完成状况 | 预计完成时间 | 完成人 | 审校人 |
 | --- | --- | --- | --- | --- | 
 | Introduction of Machine Learning |  |  |  |  |
-| Ensemble | 正在完成　| 2018.10.26 | [@ETCartman](https://github.com/ETCartman)  | 
+| Ensemble | 已完成，待审校　| 2018.10.26 | [@ETCartman](https://github.com/ETCartman)  | 
