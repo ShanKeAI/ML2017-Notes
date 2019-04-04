@@ -1,5 +1,7 @@
 # 李宏毅机器学习2017个人笔记
 ---
+
+现已转移到[ML-Course-Notes](https://github.com/ETCartman/ML-Course-Notes)
 [课程主页](http://speech.ee.ntu.edu.tw/~tlkagk/courses_ML17_2.html)
 
 [![](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/ShanKeAI/ML2017-Notes/blob/master/LICENSE)
